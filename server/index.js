@@ -23,7 +23,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get("/",(req,res)=>{
-  res.send({status:true})
+  res.send({status:false})
 })
 
 // Start server
