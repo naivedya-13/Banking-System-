@@ -1,149 +1,157 @@
+Thanks for the clarification! Based on your assignment specs and stack (React + Node.js + MySQL using MVC pattern), here is a customized `README.md` for your **Simple Banking System Assignment Project**:
+
+---
+
 ```markdown
-# Banking System
+# 🏦 Simple Banking System
 
-A full-stack banking system with role-based access control, built with **Node.js (Express, MySQL)** backend and **React (Vite, Tailwind CSS)** frontend.
-
----
-
-## Features
-
-- **User Roles:** Customer and Banker with distinct permissions.
-- **Authentication:** Secure registration, login, and logout using JWT tokens.
-- **Customer Capabilities:** View own accounts, deposit, withdraw, and view transactions.
-- **Banker Capabilities:** View all customers, all accounts, and transactions across accounts.
-- **Transaction Logging:** Detailed transaction history with balance updates.
-- **Responsive UI:** Built with React and styled using Tailwind CSS.
+A full-stack banking system built using **Node.js**, **React.js**, and **MySQL**, following the **MVC architecture**. This system allows customers to log in, view and manage their transactions, and bankers to monitor customer accounts and transaction histories.
 
 ---
 
-## Getting Started
+## 🎯 Objective
 
-### Prerequisites
-
-- Node.js (v16+)
-- MySQL Server
-
----
-
-### Backend Setup
-
-1. Clone the repository and navigate to the backend folder:
-   ```
-   cd server
-   ```
-
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Configure your MySQL database and update credentials in `server/config/db.js`.
-
-4. Create the required database and tables (example schema provided in the project).
-
-5. Start the backend server:
-   ```
-   node server.js
-   ```
-   The backend runs on `http://localhost:5000` by default.
+To implement a basic banking application that:
+- Handles customer and banker logins
+- Enables secure deposits and withdrawals
+- Tracks transaction history
+- Separates concerns using MVC principles
 
 ---
 
-### Frontend Setup
+## 🛠 Tech Stack
 
-1. Navigate to the frontend folder:
-   ```
-   cd client
-   ```
-
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Start the frontend dev server:
-   ```
-   npm run dev
-   ```
-   The frontend runs on `http://localhost:5173` by default.
+| Technology | Description                    |
+|------------|--------------------------------|
+| React.js   | Frontend UI Framework          |
+| Node.js    | Backend runtime environment    |
+| Express.js | Web framework for Node.js      |
+| MySQL      | Relational Database            |
+| Axios      | HTTP client for API calls      |
+| TailwindCSS| Styling                        |
 
 ---
 
-## Usage
-
-- Register as a **customer** or **banker**.
-- Login to access your dashboard.
-- Customers can manage their accounts and transactions.
-- Bankers can view all customers, accounts, and transactions.
-
----
-
-## API Endpoints Overview
-
-### Authentication
-
-- `POST /api/auth/register` - Register a new user.
-- `POST /api/auth/login` - Login and receive JWT token.
-- `POST /api/auth/logout` - Logout and invalidate token.
-
-### Customer Routes (Require Customer Token)
-
-- `GET /api/customer/accounts` - List customer’s accounts.
-- `GET /api/customer/accounts/:accountId/transactions` - List transactions for an account.
-- `POST /api/customer/accounts/:accountId/deposit` - Deposit funds.
-- `POST /api/customer/accounts/:accountId/withdraw` - Withdraw funds.
-
-### Banker Routes (Require Banker Token)
-
-- `GET /api/banker/customers` - List all customers.
-- `GET /api/banker/accounts` - List all accounts with user info.
-- `GET /api/banker/accounts/:accountId/transactions` - List transactions for any account.
-
----
-
-## Technologies Used
-
-- **Backend:** Node.js, Express, MySQL, JWT, bcrypt
-- **Frontend:** React, Vite, Tailwind CSS, Axios, React Router
-- **Authentication:** JWT tokens with role-based access control
-
----
-
-## Folder Structure
+## 🧱 Project Structure
 
 ```
-/server       # Backend API source code
-/client       # Frontend React app source code
+
+root/
+├── client/                # React frontend
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── pages/         # Login, Dashboard, etc.
+│   │   └── services/      # Axios API calls
+│
+├── server/                # Node.js backend (MVC pattern)
+│   ├── controllers/       # Business logic
+│   ├── models/            # Database queries
+│   ├── routes/            # API endpoints
+│   └── server.js          # Entry point
+│
+├── bank.sql               # SQL file for table creation
+├── README.md              # Project documentation
+└── package.json
+
+````
+
+---
+
+## 🗃️ Database Setup
+
+1. Create a database named **`Bank`**
+2. Use the following tables:
+
+### `Users` Table
+| Field       | Type         | Description               |
+|-------------|--------------|---------------------------|
+| id          | INT (PK)     | User ID                   |
+| name        | VARCHAR      | Name of the user          |
+| email       | VARCHAR      | Unique email              |
+| password    | VARCHAR      | Hashed password           |
+| role        | ENUM         | 'customer' or 'banker'    |
+
+### `Accounts` Table
+| Field           | Type         | Description                          |
+|------------------|--------------|--------------------------------------|
+| id              | INT (PK)     | Account ID                           |
+| user_id         | INT (FK)     | Linked user                          |
+| account_number  | VARCHAR      | Unique account number                |
+| balance         | DECIMAL      | Account balance                      |
+
+### `Transactions` Table
+| Field         | Type         | Description                          |
+|---------------|--------------|--------------------------------------|
+| id            | INT (PK)     | Transaction ID                       |
+| account_id    | INT (FK)     | Linked account                       |
+| type          | ENUM         | 'deposit' or 'withdraw'              |
+| amount        | DECIMAL      | Transaction amount                   |
+| description   | VARCHAR      | Reason or note                       |
+| created_at    | TIMESTAMP    | Date and time                        |
+| balance_after | DECIMAL      | Balance after this transaction       |
+
+---
+
+## 🔐 Authentication
+
+- On successful login (via `/login` route), a 36-character alphanumeric access token is generated and returned.
+- The frontend stores this token (in localStorage or memory).
+- For every authenticated API call, the token must be sent in the `Authorization` header.
+
+---
+
+## 👤 Customer Flow
+
+- Log in with email and password
+- View accounts and transaction history
+- Perform deposit or withdrawal via modal popup
+- Withdrawal fails with **"Insufficient Funds"** message if balance is too low
+
+---
+
+## 🧑‍💼 Banker Flow
+
+- Log in with banker credentials
+- View all customer accounts
+- Click on any account to view their transaction history
+
+---
+
+## 🚀 How to Run the Project
+
+### 1. Backend
+
+```bash
+cd server
+npm install
+node index.js
+````
+
+> Make sure MySQL is running and credentials are correctly set inside your config files.
+
+### 2. Frontend
+
+```bash
+cd client
+npm install
+npm run dev
 ```
 
----
+## 📌 Notes
 
-## License
-
-This project is licensed under the MIT License.
-
----
-
-## Contact
-
-For questions or contributions, please open an issue or submit a pull request.
+* The app does **not** use `.env` for this assignment.
+* All configurations like DB credentials are hardcoded in `server/config/db.js` or a similar file.
+* Passwords should be hashed using **bcrypt** in production-ready apps.
 
 ---
 
-**Happy Banking!**
-```
+## 📄 License
 
-Citations:
-[1] https://github.com/collector-bank/readme-template.md
-[2] https://github.com/eitozx/Bank-Management-System/blob/master/README.md
-[3] https://github.com/adrianhajdin/banking/blob/main/README.md
-[4] https://github.com/IBM/example-bank/blob/main/README.md
-[5] https://github.com/saadmk11/banking-system/blob/master/README.md
-[6] https://github.com/saadmk11/banking-system
-[7] https://github.com/matejavulic/E-BANK-Web-App/blob/master/README.md
-[8] https://github.com/krishnadey30/Bank-Management-System/blob/master/README.md
-[9] https://github.com/mishrkavita/Online-Banking-System-using-Java/blob/master/README.md
-[10] https://github.com/singhnk288/Banking-Management-System-in-Flask/blob/master/README.md
+This project is for educational purposes and assignments only.
 
 ---
-Answer from Perplexity: pplx.ai/share
+
+## 👨‍💻 Developed by
+
+**Naivedya Tripathi**
+
